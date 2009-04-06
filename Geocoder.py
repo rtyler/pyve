@@ -1,8 +1,10 @@
 
 class Address(object):
     def __init__(self, *args, **kwargs):
-        super(Address, self).__init__(*args, **kwargs)
         self.__dict__.update(kwargs)
+
+    def __repr__(self):
+        return '<%s at %s> %s\n' % (self.__class__.__name__, hex(id(self)), ', '.join(['%s=%s' % (k, v) for k, v in self.__dict__.iteritems() if isinstance(self.__dict__[k], basestring) or k == 'address']))
 
     @classmethod
     def addressFromSoapResponse(cls, holder):
@@ -23,17 +25,16 @@ class Address(object):
 
 class Geocoder(object):
     def __init__(self, *args, **kwargs):
-        super(Geocoder, self).__init__(*args, **kwargs)
         self.token = kwargs['token']
+        self.production = kwargs.get('production')
         
-        if kwargs.get('production'):
+    def reverse(self, latitude, longitude, altitude=0):
+        if not self.production:
             from staging import GeocodeService_client
             from staging import GeocodeService_types
         else:
             from production import GeocodeService_client
             from production import GeocodeService_types
-
-    def reverse(self, latitude, longitude, altitude=0):
         locator = GeocodeService_client.GeocodeServiceLocator()
         service = locator.getBasicHttpBinding_IGeocodeService()
         request = GeocodeService_client.IGeocodeService_ReverseGeocode_InputMessage()

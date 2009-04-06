@@ -17,6 +17,10 @@ except ImportError:
 class GetTokenError(Exception):
     pass
 
+class OptionsProxy(object):
+    def __init__(self, *args, **kwargs):
+        self.__dict__.update(kwargs)
+
 def getToken(opts, password):
     if not opts.production:
         from staging import CommonService_client
