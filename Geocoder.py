@@ -1,4 +1,25 @@
 
+class Address(object):
+    def __init__(self, *args, **kwargs):
+        super(Address, self).__init__(*args, **kwargs)
+        self.__dict__.update(kwargs)
+
+    @classmethod
+    def addressFromSoapResponse(cls, holder):
+        ''' 
+            Return an instantiated Address object based on the returned data from the SOAP ReverseGeocode API
+
+            Expected attributes:
+                .address
+                .displayName
+                .confidence
+                .entityType
+        '''
+        # The _Address.__dict__ dictionary looks something like this:
+        # {'_District': '', '_PostalCode': '95014-2084', '_FormattedAddress': '1 Infinite Loop, Cupertino, CA 95014-2084', '_AdminDistrict': 'CA', '_CountryRegion': 'United States', '_AddressLine': '1 Infinite Loop', '_Locality': 'Cupertino', '_PostalTown': ''}
+        address = dict(((k[1:], v) for k, v in holder._Address.__dict__.iteritems()))
+        return cls(displayName=holder._DisplayName, confidence=holder._Confidence, entityType=holder._EntityType, address=address)
+
 
 class Geocoder(object):
     def __init__(self, *args, **kwargs):
@@ -34,6 +55,5 @@ class Geocoder(object):
 
         result = service.ReverseGeocode(request)
 
-        return result
-
-
+        results = result._ReverseGeocodeResult._Results._GeocodeResult
+        return [Address.addressFromSoapResponse(piece) for piece in results]
