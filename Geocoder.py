@@ -58,3 +58,5 @@ class Geocoder(object):
 
         results = result._ReverseGeocodeResult._Results._GeocodeResult
         return [Address.addressFromSoapResponse(piece) for piece in results]
+
+# vim: set expandtab:
