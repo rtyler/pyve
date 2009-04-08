@@ -12,7 +12,7 @@ except ImportError:
     print '===> Please make sure you have it installed and locatable from PYTHONPATH'
     print '     http://pywebsvcs.sourceforge.net/'
     print 
-    sys.exit(-1)
+    raise
 
 class GetTokenError(Exception):
     pass
