@@ -46,7 +46,6 @@ class Address(object):
                 'displayName' : holder._DisplayName, 'locations' : [],}
 
         if hasattr(holder, '_Locations'):
-            print holder._Locations
             for _loc in holder._Locations._GeocodeLocation:
                 attributes['locations'].append(Location.locationFromGeocodeLocation(_loc))
 
